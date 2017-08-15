@@ -17,8 +17,7 @@
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Description:
 # Collect information from sourceable /etc/lsb-release file (present on
@@ -32,7 +31,7 @@
 ###############################################################################
 
 # This script version
-SCRIPTVERSION="2.0-SUSE"
+SCRIPTVERSION="3.0"
 
 # Defines the data files
 INFO_LSB_FILE="/etc/lsb-release"              # where to get LSB version
@@ -58,23 +57,19 @@ MSG_NONE="(none)"
 MSG_RESULT="" # contains the result in case short output selected
 MSG_DISTRIBUTOR="SUSE"
 
-# Description string delimiter
-DESCSTR_DELI="release"
-
-
 ###############################################################################
 #     FUNCTIONS
 ###############################################################################
 
 # Display Program Version for internal use (needed by help2man)
 DisplayProgramVersion() {
-    echo "FSG `basename $0` v$SCRIPTVERSION"
+    echo "`basename $0` v$SCRIPTVERSION"
     echo
     echo "Copyright (C) 2000, 2002, 2004 Free Standards Group, Inc."
-    echo "This is free software; see the source for copying conditions.  There\
- is NO"
-    echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR\
- PURPOSE."
+    echo "Copyright (C) 2017 SUSE Linux GmbH"
+    echo
+    echo "This is free software; see the source for copying conditions.  There is NO"
+    echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     echo
     echo "Originally written by Dominique MASSONIE."
 
@@ -83,8 +78,7 @@ DisplayProgramVersion() {
 
 # defines the Usage for lsb_release
 Usage() {
-    echo "FSG `basename $0` v$SCRIPTVERSION prints certain LSB (Linux\
- Standard Base) and"
+    echo "`basename $0` v$SCRIPTVERSION prints certain LSB (Linux Standard Base) and"
     echo "Distribution information."
     echo
     echo "Usage: `basename $0` [OPTION]..."
@@ -179,55 +173,42 @@ GetLSBInfo() {
     fi
 }
 
-# Get the whole distrib information string (from ARG $1 file)
+# Get the whole distrib information string (from /etc/os-release)
 InitDistribInfo() {
-    FILENAME=$1
 
-    if [ -z "$FILENAME" ]
-    then
-        if [ -f "$ALTERNATE_DISTRIB_FILE" ]
-        then
-          [ -z "$DISTRIB_ID" ] && DISTRIB_ID=$MSG_NA
-          [ -z "$DISTRIB_RELEASE" ] && DISTRIB_RELEASE=$MSG_NA
-          [ -z "$DISTRIB_CODENAME" ] && DISTRIB_CODENAME=$MSG_NA
-          [ -z "$DISTRIB_DESCRIPTION" ] && DISTRIB_DESCRIPTION=$MSG_NONE
+    source $INFO_DISTRIB_FILE
+    NO=""                    # is Description string syntax correct ?
 
-          EXIT_STATUS=$ERROR_NOANSWER
-        fi
-    else
-        source $INFO_DISTRIB_FILE
-        NO=""                    # is Description string syntax correct ?
-        if [ -z "$DISTRIB_DESCRIPTION" ]                                      \
-            || [ -n "$(echo $DISTRIB_DESCRIPTION |                            \
-                       sed -e "s/.*$DESCSTR_DELI.*//")" ]
-        then
-            TMP_DISTRIB_DESC=$PRETTY_NAME
-            [ -z "$DISTRIB_DESCRIPTION" ]                                     \
-                && DISTRIB_DESCRIPTION=$TMP_DISTRIB_DESC
-        else
-            TMP_DISTRIB_DESC=$DISTRIB_DESCRIPTION
-        fi
-
-        if [ -z "$TMP_DISTRIB_DESC" ]  # head or lsb-release init
-        then                           # file contains no data
+    if [ -z "$DISTRIB_DESCRIPTION" ]; then
+	if [ -n "$PRETTY_NAME" ]; then
+            DISTRIB_DESCRIPTION=$PRETTY_NAME
+	else
             DISTRIB_DESCRIPTION=$MSG_NONE
-            NO="y"
-        else                           # Do simple check
-            [ -n "$(echo $TMP_DISTRIB_DESC |                                  \
-                    sed -e "s/.*$DESCSTR_DELI.*//")" ]                        \
-                && NO="y"
-        fi
+	fi
+    fi
 
-        if [ -n "$NO" ]
-        then                           # does not contain "release" delimiter
-            [ -z "$DISTRIB_ID" ] && DISTRIB_ID=$MSG_DISTRIBUTOR
-            if [ -z "$DISTRIB_RELEASE" ]
-            then
-	       DISTRIB_RELEASE=$VERSION_ID
-	       [ -z "$DISTRIB_RELEASE" ] && DISTRIB_RELEASE=$MSG_NA
-	    fi
-            [ -z "$DISTRIB_CODENAME" ] && DISTRIB_CODENAME=$MSG_NA
-        fi
+    if [ -z "$DISTRIB_ID" ]; then
+	if [ -n "$MSG_DISTRIBUTOR" ]; then
+	    DISTRIB_ID=$MSG_DISTRIBUTOR
+	else
+            DISTRIB_ID=$MSG_NA
+	fi
+    fi
+
+    if [ -z "$DISTRIB_RELEASE" ]; then
+	if [ -n "$VERSION_ID" ]; then
+            DISTRIB_RELEASE=$VERSION_ID
+	else
+            DISTRIB_RELEASE=$MSG_NA
+	fi
+    fi
+
+    if [ -z "$DISTRIB_CODENAME" ]; then
+	if [ -n "$VERSION_CODENAME" ]; then
+            DISTRIB_CODENAME = $VERSION_CODENAME
+	else
+            DISTRIB_CODENAME=$MSG_NA
+	fi
     fi
 }
 
@@ -241,7 +222,7 @@ GetDistribInfo() {
 
     if [ -n "$NO" ]
     then
-        InitDistribInfo $INFO_DISTRIB_FILE
+        InitDistribInfo
     fi
 }
 
@@ -257,20 +238,6 @@ DisplayVersion() {
 
 # Display string id of distributor ( i.e. a single word! )
 DisplayID() {
-    if [ -z "$DISTRIB_ID" ]
-    then
-## Linux could be part of the distro name (i.e. Turbolinux) or a separate word
-## set before, after...
-## also expect a delimiter ( i.e. "release" )
-        if [ -n "$(echo $TMP_DISTRIB_DESC | sed "s/.*$DESCSTR_DELI.*//")" ]
-        then
-            DISTRIB_ID=$MSG_NA
-        else
-            DISTRIB_ID=$(echo " $TMP_DISTRIB_DESC"                            \
-            | sed -e "s/[[:blank:]][Ll][Ii][Nn][Uu][Xx][[:blank:]]/ /g"       \
-            -e "s/\(.*\)[[:blank:]]$DESCSTR_DELI.*/\1/" -e "s/[[:blank:]]//g")
-        fi
-    fi
     if [ -z "$ARG_S" ]
     then
         echo -e "$MSG_DISTID$DISTRIB_ID"
@@ -296,14 +263,6 @@ DisplayDescription() {
 
 # Display release number of distribution.
 DisplayRelease() {
-    if [ -z "$DISTRIB_RELEASE" ]
-    then                       # parse the "$DISTRIB_DESCRIPTION" string
-        DISTRIB_RELEASE=$(echo "$TMP_DISTRIB_DESC" |                          \
-      sed -e "s/.*$DESCSTR_DELI[[:blank:]]*\([[:digit:]][[:graph:]]*\).*/\1/" )
-        [ "$DISTRIB_RELEASE" = "$TMP_DISTRIB_DESC" ]                          \
-            || [ -z "$DISTRIB_RELEASE" ]                                      \
-            && DISTRIB_RELEASE=$MSG_NA
-    fi
     if [ -z "$ARG_S" ]
     then
         echo -e "$MSG_DISTREL$DISTRIB_RELEASE"
@@ -314,14 +273,6 @@ DisplayRelease() {
 
 # Display codename according to distribution version.
 DisplayCodename() {
-    if [ -z "$DISTRIB_CODENAME" ]
-    then                       # parse the "$DISTRIB_DESCRIPTION" string
-        DISTRIB_CODENAME=$(echo "$TMP_DISTRIB_DESC" |                         \
-                           sed -e "s/.*$DESCSTR_DELI.*(\(.*\)).*/\1/")
-        [ "$DISTRIB_CODENAME" = "$TMP_DISTRIB_DESC" ]                         \
-            || [ -z "$DISTRIB_CODENAME" ]                                     \
-            && DISTRIB_CODENAME=$MSG_NA
-    fi
     if [ -z "$ARG_S" ]
     then
         echo -e "$MSG_DISTCODE$(echo "$DISTRIB_CODENAME" |                    \
