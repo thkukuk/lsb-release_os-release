@@ -173,7 +173,7 @@ my ($help_text, $version_text) = map {
 	or die "$this_program: can't get `--$_' info from $ARGV[0]\n"
 } qw(help), $opt_version_key;
 
-my $date = strftime "%B %Y", localtime;
+my $date = strftime "%B %Y", gmtime((stat "lsb_release")[9]);
 (my $program = $ARGV[0]) =~ s!.*/!!;
 my $package = $program;
 my $version;
@@ -326,12 +326,6 @@ while (length)
 	next;
     }
 
-    # Catch bug report text.
-    if (/^(Report +bugs|Email +bug +reports +to) /)
-    {
-	$sect = 'REPORTING BUGS';
-    }
-
     # Author section.
     elsif (/^Written +by/)
     {
@@ -479,7 +473,7 @@ EOT
 
 # Section ordering.
 my @pre = qw(NAME SYNOPSIS DESCRIPTION OPTIONS FILES EXAMPLES);
-my @post = ('AUTHOR', 'REPORTING BUGS', 'COPYRIGHT', 'SEE ALSO');
+my @post = ('AUTHOR', 'COPYRIGHT', 'SEE ALSO');
 my $filter = join '|', @pre, @post;
 
 # Output content.
