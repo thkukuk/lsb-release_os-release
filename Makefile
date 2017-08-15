@@ -14,7 +14,7 @@ prefix=/usr/local
 else
 prefix=$(INSTALL_ROOT)
 endif
-mandir=${prefix}/man
+mandir=${prefix}/share/man
 
 all: man
 
