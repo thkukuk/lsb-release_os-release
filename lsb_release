@@ -31,7 +31,7 @@
 ###############################################################################
 
 # This script version
-SCRIPTVERSION="3.0"
+SCRIPTVERSION="3.1"
 
 # Defines the data files
 INFO_LSB_FILE="/etc/lsb-release"              # where to get LSB version
@@ -55,7 +55,7 @@ MSG_DISTCODE="Codename:\t"
 MSG_NA="n/a"
 MSG_NONE="(none)"
 MSG_RESULT="" # contains the result in case short output selected
-MSG_DISTRIBUTOR="SUSE"
+MSG_DISTRIBUTOR=""
 
 ###############################################################################
 #     FUNCTIONS
@@ -191,7 +191,17 @@ InitDistribInfo() {
 	if [ -n "$MSG_DISTRIBUTOR" ]; then
 	    DISTRIB_ID=$MSG_DISTRIBUTOR
 	else
-            DISTRIB_ID=$MSG_NA
+	    case "$PRETTY_NAME" in
+		openSUSE*)
+		    DISTRIB_ID="openSUSE"
+		    ;;
+		SUSE*)
+		    DISTRIB_ID="SUSE"
+		    ;;
+		*)
+		    DISTRIB_ID=$MSG_NA
+		    ;;
+	    esac
 	fi
     fi
 
