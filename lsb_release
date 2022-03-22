@@ -176,7 +176,7 @@ GetLSBInfo() {
 # Get the whole distrib information string (from /etc/os-release)
 InitDistribInfo() {
 
-    source $INFO_DISTRIB_FILE
+    . $INFO_DISTRIB_FILE
     NO=""                    # is Description string syntax correct ?
 
     if [ -z "$DISTRIB_DESCRIPTION" ]; then
