@@ -63,10 +63,11 @@ MSG_DISTRIBUTOR=""
 
 # Display Program Version for internal use (needed by help2man)
 DisplayProgramVersion() {
-    echo "`basename $0` v$SCRIPTVERSION"
+    echo "$(basename "$0") v$SCRIPTVERSION"
     echo
     echo "Copyright (C) 2000, 2002, 2004 Free Standards Group, Inc."
     echo "Copyright (C) 2017 SUSE Linux GmbH"
+    echo "Copyright (C) 2022 SUSE Software Solutions Germany GmbH"
     echo
     echo "This is free software; see the source for copying conditions.  There is NO"
     echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
@@ -78,10 +79,10 @@ DisplayProgramVersion() {
 
 # defines the Usage for lsb_release
 Usage() {
-    echo "`basename $0` v$SCRIPTVERSION prints certain LSB (Linux Standard Base) and"
+    echo "$(basename "$0") v$SCRIPTVERSION prints certain LSB (Linux Standard Base) and"
     echo "Distribution information."
     echo
-    echo "Usage: `basename $0` [OPTION]..."
+    echo "Usage: $(basename "$0") [OPTION]..."
     echo "With no OPTION specified defaults to -v."
     echo
     echo "Options:"
@@ -161,9 +162,9 @@ GetLSBInfo() {
 	do
 	    if [ -z "$LSB_VERSION" ]
 	    then
-		LSB_VERSION=`basename $tag`
+	        LSB_VERSION=$(basename "$tag")
 	    else
-		LSB_VERSION=$LSB_VERSION:`basename $tag`
+		LSB_VERSION=$LSB_VERSION:$(basename "$tag")
 	    fi
 	done
     fi
@@ -215,7 +216,7 @@ InitDistribInfo() {
 
     if [ -z "$DISTRIB_CODENAME" ]; then
 	if [ -n "$VERSION_CODENAME" ]; then
-            DISTRIB_CODENAME = $VERSION_CODENAME
+            DISTRIB_CODENAME=$VERSION_CODENAME
 	else
             DISTRIB_CODENAME=$MSG_NA
 	fi
