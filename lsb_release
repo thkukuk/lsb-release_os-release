@@ -193,6 +193,20 @@ InitDistribInfo() {
 	    DISTRIB_ID=$MSG_DISTRIBUTOR
 	else
 	    case "$PRETTY_NAME" in
+		Fedora*)
+		    DISTRIB_ID="Fedora"
+		    ;;
+		CentOS*)
+		    DISTRIB_ID="CentOS"
+		    ;;
+		"Red Hat Enterprise Linux"*)
+		    DISTRIB_ID="RedHatEnterprise"
+		AlmaLinux*)
+		    DISTRIB_ID="AlmaLinux"
+		    ;;
+		Oracle*)
+		    DISTRIB_ID="OracleLinux"
+		    ;;
 		openSUSE*)
 		    DISTRIB_ID="openSUSE"
 		    ;;
