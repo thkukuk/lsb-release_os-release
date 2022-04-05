@@ -201,6 +201,7 @@ InitDistribInfo() {
 		    ;;
 		"Red Hat Enterprise Linux"*)
 		    DISTRIB_ID="RedHatEnterprise"
+		    ;;
 		AlmaLinux*)
 		    DISTRIB_ID="AlmaLinux"
 		    ;;
