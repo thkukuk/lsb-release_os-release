@@ -194,7 +194,7 @@ InitDistribInfo() {
 	if [ -n "$MSG_DISTRIBUTOR" ]; then
 	    DISTRIB_ID=$MSG_DISTRIBUTOR
 	else
-	    case "$PRETTY_NAME" in
+	    case "$NAME" in
 		Fedora*)
 		    DISTRIB_ID="Fedora"
 		    ;;
@@ -217,7 +217,7 @@ InitDistribInfo() {
 		    DISTRIB_ID="SUSE"
 		    ;;
 		*)
-		    DISTRIB_ID=$MSG_NA
+		    DISTRIB_ID=$(echo $NAME | tr -d '[:blank:]')
 		    ;;
 	    esac
 	fi
