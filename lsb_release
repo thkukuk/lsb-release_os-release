@@ -5,6 +5,7 @@
 # Copyright (C) 2000, 2002, 2004 Free Standards Group, Inc.
 # Originally by Dominique MASSONIE <mdomi@users.sourceforge.net>
 # Modified for SUSE Linux products by Thorsten Kukuk
+# Modified for Red Hat distributions by Neal Gompa
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -68,6 +69,7 @@ DisplayProgramVersion() {
     echo "Copyright (C) 2000, 2002, 2004 Free Standards Group, Inc."
     echo "Copyright (C) 2017 SUSE Linux GmbH"
     echo "Copyright (C) 2022 SUSE Software Solutions Germany GmbH"
+    echo "Copyright (C) 2021, 2023 Neal Gompa"
     echo
     echo "This is free software; see the source for copying conditions.  There is NO"
     echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
