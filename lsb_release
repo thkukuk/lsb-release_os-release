@@ -213,7 +213,7 @@ InitDistribInfo() {
 		openSUSE*)
 		    DISTRIB_ID="openSUSE"
 		    ;;
-		SUSE*)
+		SLE*|ALP*|SUSE*)
 		    DISTRIB_ID="SUSE"
 		    ;;
 		*)
