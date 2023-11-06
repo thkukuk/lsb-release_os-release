@@ -32,7 +32,7 @@
 ###############################################################################
 
 # This script version
-SCRIPTVERSION="3.2"
+SCRIPTVERSION="3.3"
 
 # Defines the data files
 INFO_LSB_FILE="/etc/lsb-release"              # where to get LSB version
